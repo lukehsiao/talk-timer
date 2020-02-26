@@ -1,6 +1,10 @@
 #![forbid(unsafe_code)]
 #![forbid(warnings)]
 
+//! # Talk Timer
+//! This is a simple command line tool that displays a timer. Built as a toy to
+//! explore typestates in Rust, and used as a prompt for speakers during talks.
+
 use std::io::{self, Write};
 use std::thread;
 use std::time::{Duration, Instant};
@@ -8,6 +12,7 @@ use yansi::{Color, Paint};
 
 struct Init;
 struct Countdown;
+struct LastStretch;
 struct Done;
 
 struct Timer<S> {
@@ -35,6 +40,33 @@ impl Timer<Init> {
 
 impl Timer<Countdown> {
     /// Run down the timer until time is out.
+    fn run(&self) -> Timer<LastStretch> {
+        loop {
+            thread::sleep(Duration::from_millis(100));
+            let remaining = self.duration - self.start.elapsed();
+            match remaining.as_secs() {
+                s if s < 11 => {
+                    break;
+                }
+                sec_remaining => {
+                    if (sec_remaining % 10) == 0 {
+                        print!("\r{:02}:{:02} left", sec_remaining / 60, sec_remaining % 60,);
+                        io::stdout().flush().unwrap();
+                    }
+                }
+            }
+        }
+
+        Timer {
+            duration: self.duration,
+            start: self.start,
+            _state: LastStretch,
+        }
+    }
+}
+
+impl Timer<LastStretch> {
+    /// Run down the timer until time is out.
     fn run(&self) -> Timer<Done> {
         loop {
             thread::sleep(Duration::from_millis(100));
@@ -46,10 +78,8 @@ impl Timer<Countdown> {
                     break;
                 }
                 sec_remaining => {
-                    if (sec_remaining % 10) == 0 {
-                        print!("\r{:02}:{:02} left", sec_remaining / 60, sec_remaining % 60,);
-                        io::stdout().flush().unwrap();
-                    }
+                    print!("\r{:02}:{:02} left", sec_remaining / 60, sec_remaining % 60,);
+                    io::stdout().flush().unwrap();
                 }
             }
         }
@@ -139,7 +169,8 @@ ARGUMENTS:
     };
 
     let countdown = timer.start();
-    let done = countdown.run();
+    let laststretch = countdown.run();
+    let done = laststretch.run();
     done.wait();
     Ok(())
 }
