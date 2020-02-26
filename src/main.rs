@@ -1,11 +1,91 @@
 #![forbid(unsafe_code)]
 #![forbid(warnings)]
 
-use chrono;
 use std::io::{self, Write};
 use std::thread;
 use std::time::{Duration, Instant};
 use yansi::{Color, Paint};
+
+struct Init;
+struct Countdown;
+struct Done;
+
+struct Timer<S> {
+    duration: Duration,
+    start: Instant,
+    _state: S,
+}
+
+impl Timer<Init> {
+    /// Transition to countdown.
+    ///
+    /// This method consumes the sender in its current state,
+    /// returns it in a new state.
+    fn start(self) -> Timer<Countdown> {
+        let sec_remaining = (self.duration - self.start.elapsed()).as_secs();
+        print!("{:02}:{:02} left", sec_remaining / 60, sec_remaining % 60,);
+        io::stdout().flush().unwrap();
+        Timer {
+            duration: self.duration,
+            start: self.start,
+            _state: Countdown,
+        }
+    }
+}
+
+impl Timer<Countdown> {
+    /// Run down the timer until time is out.
+    fn run(&self) -> Timer<Done> {
+        loop {
+            thread::sleep(Duration::from_millis(100));
+            let remaining = self.duration - self.start.elapsed();
+            match remaining.as_secs() {
+                0 => {
+                    print!("\r{}", Paint::red("00:00 left"));
+                    io::stdout().flush().unwrap();
+                    break;
+                }
+                sec_remaining => {
+                    if (sec_remaining % 10) == 0 {
+                        print!("\r{:02}:{:02} left", sec_remaining / 60, sec_remaining % 60,);
+                        io::stdout().flush().unwrap();
+                    }
+                }
+            }
+        }
+
+        Timer {
+            duration: self.duration,
+            start: self.start,
+            _state: Done,
+        }
+    }
+}
+
+impl Timer<Done> {
+    /// Flash warning until program is killed
+    fn wait(&self) {
+        let mut now = Instant::now();
+        let mut toggle = true;
+        loop {
+            thread::sleep(Duration::from_millis(100));
+            let elapsed_ms = now.elapsed().as_millis();
+            if elapsed_ms > 500 {
+                if toggle {
+                    print!("\r{}", Paint::white("00:00 left").bg(Color::Red));
+                    io::stdout().flush().unwrap();
+                    toggle = !toggle;
+                    now = Instant::now()
+                } else {
+                    print!("\r{}", Paint::red("00:00 left"));
+                    io::stdout().flush().unwrap();
+                    toggle = !toggle;
+                    now = Instant::now()
+                }
+            }
+        }
+    }
+}
 
 trait TryFrom<T>: Sized {
     type Error;
@@ -50,34 +130,17 @@ ARGUMENTS:
 
     // Arguments can be parsed in any order.
     let duration = Duration::try_from(free[0].as_str())? + Duration::from_secs(1);
-
-    // Loop as time elapses and update timer
     let start = Instant::now();
-    let mut remaining = duration - start.elapsed();
-    let mut formatter = chrono::Duration::from_std(remaining)?;
-    print!(
-        "{:02}:{:02} left\r",
-        formatter.num_minutes(),
-        formatter.num_seconds() % 60,
-    );
-    io::stdout().flush().unwrap();
-    loop {
-        thread::sleep(Duration::from_millis(100));
-        remaining = duration - start.elapsed();
-        if remaining.as_secs() == 0 {
-            print!("{}\n", Paint::white("00:00 left").bg(Color::Red));
-            break;
-        }
-        if (remaining.as_secs() % 10) == 0 {
-            formatter = chrono::Duration::from_std(remaining)?;
-            print!(
-                "{:02}:{:02} left\r",
-                formatter.num_minutes(),
-                formatter.num_seconds() % 60
-            );
-            io::stdout().flush().unwrap();
-        }
-    }
+
+    let timer = Timer {
+        duration,
+        start,
+        _state: Init,
+    };
+
+    let countdown = timer.start();
+    let done = countdown.run();
+    done.wait();
     Ok(())
 }
 
