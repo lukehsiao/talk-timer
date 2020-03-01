@@ -28,6 +28,10 @@ impl Timer<Init> {
     /// returns it in a new state.
     fn start(self) -> Timer<Countdown> {
         let sec_remaining = (self.duration - self.start.elapsed()).as_secs();
+
+        // To clear space in the terminal so zooming in has no other content
+        println!("\n\n");
+
         print!("{:02}:{:02} left", sec_remaining / 60, sec_remaining % 60,);
         io::stdout().flush().unwrap();
         Timer {
