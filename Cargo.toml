@@ -3,7 +3,7 @@ name = "timer"
 version = "0.1.0"
 authors = ["Luke Hsiao <lwhsiao@stanford.edu>"]
 edition = "2018"
-description = "A simple CLI tool for showing a talk timer."
+description = "A simple command line tool for showing a talk timer."
 repository = "https://github.com/lukehsiao/timer-rs"
 readme = "README.md"
 license = "Apache-2.0 OR MIT"
@@ -11,7 +11,7 @@ categories = ["command-line-utilities"]
 keywords = ["timer", "cli", "conference"]
 
 [badges]
-travis-ci = { repository = "lukehsiao/timer-rs", branch = "master" }
+travis-ci = { repository = "lukehsiao/talk-timer", branch = "master" }
 
 # Maintenance: `status` is required. Available options are:
 # - `actively-developed`: New features are being added and bugs are being fixed.
