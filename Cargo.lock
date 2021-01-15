@@ -14,7 +14,7 @@ checksum = "d70072c20945e1ab871c472a285fc772aefd4f5407723c206242f2c6f94595d6"
 
 [[package]]
 name = "talk-timer"
-version = "0.1.0"
+version = "0.1.1-alpha.0"
 dependencies = [
  "anyhow",
  "pico-args",
