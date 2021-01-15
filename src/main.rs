@@ -27,10 +27,13 @@ const HELP: &str = "\
 talk-timer
 
 USAGE:
-    timer <DURATION>
+  talk-timer <DURATION>
+
+FLAGS:
+  -h, --help  Prints this help information
 
 ARGUMENTS:
-    DURATION    A duration of time in hours, minutes, or seconds (e.g., \"20m\" or \"65s\")
+  DURATION    A duration of time in hours, mins, or secs (e.g., \"20m\" or \"65s\")
 ";
 
 impl Timer<Init> {
