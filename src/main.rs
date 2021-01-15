@@ -6,8 +6,10 @@
 //! explore typestates in Rust, and used as a prompt for speakers during talks.
 
 use std::io::{self, Write};
-use std::thread;
 use std::time::{Duration, Instant};
+use std::{process, thread};
+
+use anyhow::{anyhow, bail, Error, Result};
 use yansi::{Color, Paint};
 
 struct Init;
@@ -20,6 +22,16 @@ struct Timer<S> {
     start: Instant,
     _state: S,
 }
+
+const HELP: &str = "\
+talk-timer
+
+USAGE:
+    timer <DURATION>
+
+ARGUMENTS:
+    DURATION    A duration of time in hours, minutes, or seconds (e.g., \"20m\" or \"65s\")
+";
 
 impl Timer<Init> {
     /// Transition to countdown.
@@ -128,7 +140,7 @@ trait TryFrom<T>: Sized {
 }
 
 impl TryFrom<&str> for Duration {
-    type Error = &'static str;
+    type Error = Error;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         let chars: Vec<char> = value.chars().collect();
@@ -138,32 +150,32 @@ impl TryFrom<&str> for Duration {
                 'h' | 'H' => Ok(Duration::from_secs(duration * 60 * 60)),
                 'm' | 'M' => Ok(Duration::from_secs(duration * 60)),
                 's' | 'S' => Ok(Duration::from_secs(duration)),
-                _ => Err("Invalid duration unit. Did you use 's', 'm', or 'h'?"),
+                _ => Err(anyhow!(
+                    "Invalid duration unit. Did you use 's', 'm', or 'h'?"
+                )),
             },
-            Err(_) => Err("Invalid duration value."),
+            Err(_) => Err(anyhow!("Invalid duration value.")),
         }
     }
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = pico_args::Arguments::from_env();
+fn main() -> Result<()> {
+    let mut args = pico_args::Arguments::from_env();
 
-    let free = args.free()?;
-
-    if free.len() != 1 {
-        eprintln!(
-            "
-USAGE:
-    timer <duration>
-
-ARGUMENTS:
-    duration    A duration of time in hours, minutes, or seconds (e.g., \"20m\" or \"65s\")
-"
-        )
+    if args.contains(["-h", "--help"]) {
+        eprintln!("{}", HELP);
+        process::exit(0);
     }
 
+    let dur_str: String = match args.free_from_str() {
+        Ok(dur) => dur,
+        Err(e) => {
+            bail!("[ERROR] Invalid duration: {}", e);
+        }
+    };
+
     // Arguments can be parsed in any order.
-    let duration = Duration::try_from(free[0].as_str())? + Duration::from_secs(1);
+    let duration = Duration::try_from(&dur_str)? + Duration::from_secs(1);
     let start = Instant::now();
 
     let timer = Timer {
