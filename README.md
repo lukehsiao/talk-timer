@@ -1,13 +1,28 @@
-# talk-timer
+<h1 align="center">
+    ⏲️<br>
+    talk-timer
+</h1>
+<div align="center">
+    <strong>A command line countdown timer for talks.</strong>
+</div>
+<br>
+<div align="center">
+  <a href="https://github.com/lukehsiao/talk-timer/actions/workflows/rust.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/lukehsiao/talk-timer/rust.yml" alt="Build Status"></a>
+  <a href="https://crates.io/crates/talk-timer">
+    <img src="https://img.shields.io/crates/v/talk-timer" alt="Version">
+  </a>
+  <a href="https://github.com/lukehsiao/talk-timer/blob/main/LICENSE">
+    <img src="https://img.shields.io/crates/l/talk-timer" alt="License">
+  </a>
+</div>
+<br>
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/lukehsiao/talk-timer/rust)](https://github.com/lukehsiao/talk-timer/actions)
-[![Crates.io](https://img.shields.io/crates/v/talk-timer)](https://crates.io/crates/talk-timer)
-[![License](https://img.shields.io/crates/l/talk-timer)](https://github.com/lukehsiao/talk-timer/blob/master/LICENSE-MIT)
+`talk-timer` is a simple command line countdown timer.
+It simply display a countdown in your terminal in blocks of 10 seconds, until the final 10 seconds, which counts down by seconds.
+Then, it flashes red when hitting 0.
 
-`talk-timer` is a simple command line timer. It simply displays a countdown in your terminal in
-blocks of 10 seconds, until the final 10 seconds, which counts down by seconds. Then, it flashes red
-when hitting 0. You could magnify your terminal and have this facing a speaker in a conference to
-provide them a helpful indicator of how much time they have remaining.
+I find this useful to set a timer, then magnify (zoom in) on my terminal and have my laptop facing a speaker in a conference to provide them a subtle indicator of how much time they have remaining.
 
 This is essentially a toy, written to explore typestates in Rust.
 

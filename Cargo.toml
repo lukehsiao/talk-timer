@@ -6,7 +6,7 @@ edition = "2018"
 description = "A simple command line tool for showing a talk timer."
 repository = "https://github.com/lukehsiao/talk-timer"
 readme = "README.md"
-license = "Apache-2.0 OR MIT"
+license = "BlueOak-1.0.0"
 categories = ["command-line-utilities"]
 keywords = ["talk-timer", "timer", "cli", "conference"]
 
