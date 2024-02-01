@@ -1,5 +1,5 @@
-#![forbid(unsafe_code)]
-#![forbid(warnings)]
+#![deny(unsafe_code)]
+#![deny(warnings)]
 
 //! # Talk Timer
 //! This is a simple command line tool that displays a timer. Built as a toy to
@@ -139,13 +139,13 @@ impl Timer<Done> {
 trait TryFrom<T>: Sized {
     type Error;
 
-    fn try_from(value: &str) -> Result<Self, Self::Error>;
+    fn try_from_str(value: &str) -> Result<Self, Self::Error>;
 }
 
 impl TryFrom<&str> for Duration {
     type Error = Error;
 
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
+    fn try_from_str(value: &str) -> Result<Self, Self::Error> {
         let chars: Vec<char> = value.chars().collect();
         let len = chars.len();
         match value[..len - 1].parse::<u64>() {
@@ -178,7 +178,7 @@ fn main() -> Result<()> {
     };
 
     // Arguments can be parsed in any order.
-    let duration = Duration::try_from(&dur_str)? + Duration::from_secs(1);
+    let duration = Duration::try_from_str(&dur_str)? + Duration::from_secs(1);
     let start = Instant::now();
 
     let timer = Timer {
@@ -200,31 +200,31 @@ mod test {
 
     #[test]
     fn test_parse_seconds() {
-        let duration = Duration::try_from("30s").unwrap();
+        let duration = Duration::try_from_str("30s").unwrap();
         assert_eq!(duration, Duration::from_secs(30));
     }
 
     #[test]
     fn test_parse_minutes() {
-        let duration = Duration::try_from("20M").unwrap();
+        let duration = Duration::try_from_str("20M").unwrap();
         assert_eq!(duration, Duration::from_secs(1200));
     }
 
     #[test]
     fn test_parse_hours() {
-        let duration = Duration::try_from("2h").unwrap();
+        let duration = Duration::try_from_str("2h").unwrap();
         assert_eq!(duration, Duration::from_secs(60 * 60 * 2));
     }
 
     #[test]
     fn test_reject_units() {
-        let duration = Duration::try_from("2k");
+        let duration = Duration::try_from_str("2k");
         assert!(duration.is_err());
     }
 
     #[test]
     fn test_reject_value() {
-        let duration = Duration::try_from("somethingh");
+        let duration = Duration::try_from_str("somethingh");
         assert!(duration.is_err());
     }
 }
