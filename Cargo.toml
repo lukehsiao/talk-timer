@@ -1,6 +1,6 @@
 [package]
 name = "talk-timer"
-version = "0.1.1-alpha.0"
+version = "0.2.0"
 authors = ["Luke Hsiao <luke@hsiao.dev>"]
 edition = "2021"
 description = "A simple command line tool for showing a talk timer."
