@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.1](https://github.com/lukehsiao/talk-timer/compare/v0.2.0..v0.2.1) - 2024-04-29
+
+This is a release to simply update the docs.
+There is no meaningful change otherwise.
+
+### Documentation
+
+- **(README)** fix grammar and format consistently - ([150fc0d](https://github.com/lukehsiao/talk-timer/commit/150fc0d7589814596ff07875fc2c7493ddee26df)) - Luke Hsiao
+
+---
 ## [0.2.0](https://github.com/lukehsiao/talk-timer/compare/v0.1.0..v0.2.0) - 2024-02-01
 
 ### Refactor
