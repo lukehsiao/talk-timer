@@ -8,7 +8,8 @@
 <br>
 <div align="center">
   <a href="https://github.com/lukehsiao/talk-timer/actions/workflows/rust.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/lukehsiao/talk-timer/rust.yml" alt="Build Status"></a>
+    <img src="https://img.shields.io/github/actions/workflow/status/lukehsiao/talk-timer/rust.yml" alt="Build Status">
+  </a>
   <a href="https://crates.io/crates/talk-timer">
     <img src="https://img.shields.io/crates/v/talk-timer" alt="Version">
   </a>
@@ -19,12 +20,12 @@
 <br>
 
 `talk-timer` is a simple command line countdown timer.
-It simply display a countdown in your terminal in blocks of 10 seconds, until the final 10 seconds, which counts down by seconds.
+It simply displays a countdown in your terminal in blocks of 10 seconds, until the final 10 seconds, which counts down by seconds.
 Then, it flashes red when hitting 0.
 
 I find this useful to set a timer, then magnify (zoom in) on my terminal and have my laptop facing a speaker in a conference to provide them a subtle indicator of how much time they have remaining.
 
-This is essentially a toy, written to explore typestates in Rust.
+This is essentially a toy, written to explore [typestates](https://yoric.github.io/post/rust-typestate/) in Rust.
 
 ## Installation
 
